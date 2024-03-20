@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Server-Sent Events (SSE) Example</title>
+</head>
+<body>
+<h1>Server-Sent Events (SSE) Example</h1>
+<div id="sseData"></div>
+<button id="disconnectButton">Disconnect</button>
+
+<script>
+let eventSource;
+
+// Function to connect to the SSE server
+function connectToServer() {
+    eventSource = new EventSource('http://localhost:5000');
+
+    // Listen for SSE events from the server
+    eventSource.onmessage = function(event) {
+        document.getElementById('sseData').innerText = event.data;
+    };
+
+    // Handle connection errors
+    eventSource.onerror = function(event) {
+        console.error('SSE connection failed');
+        eventSource.close();
+    };
+}
+
+// Function to disconnect from the SSE server
+function disconnectFromServer() {
+    if (eventSource) {
+        eventSource.close();
+        console.log('SSE connection closed');
+    }
+}
+
+// Connect to the SSE server when the page loads
+connectToServer();
+
+// Add event listener to disconnect button
+document.getElementById('disconnectButton').addEventListener('click', disconnectFromServer);
+</script>
+</body>
+</html>
